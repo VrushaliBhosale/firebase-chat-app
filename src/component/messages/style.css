@@ -1,0 +1,27 @@
+.card_wrapper{
+  display: flex;
+  flex-direction: column;
+}
+
+.text_button_wrapper{
+  display: flex;
+  margin-top: 2%;
+  justify-content: space-between;
+  padding: 1%;
+}
+
+.send_button{
+  /* margin-top: 11px; */
+  border: 1px solid transparent;
+  background-color: teal;
+  border-radius: 6px;
+}
+
+.header{
+  display: flex;
+  justify-content: space-between;
+  background-color: teal;
+  /* padding: 10px; */
+  font-weight: lighter;
+  font-size: x-large;
+}

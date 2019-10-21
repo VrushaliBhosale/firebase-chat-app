@@ -1,0 +1,33 @@
+.wrapper{
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  
+  height: 80vh;
+  border: 1px solid;
+  margin-top: 17%;
+}
+
+.user_name{
+  display: flex;
+  flex-direction: column;
+  margin: auto 0;
+}
+
+.messages{
+  border: 1px solid gray;
+  margin: 0% 20%;
+}
+
+.submit{
+  align-self: center;
+}
+
+.main_header{
+  display: flex;
+  background-color: #F50057;
+  padding: 10px;
+  font-weight: lighter;
+  font-size: x-large;
+  color: white;
+}
