@@ -1,0 +1,37 @@
+.card_wrapper{
+  display: flex;
+  flex-direction: column;
+}
+
+.text_button_wrapper{
+  display: flex;
+  margin-top: 3%;
+  justify-content: space-between;
+  padding: 1%;
+}
+
+.send_button{
+  /* margin-top: 11px; */
+  border: 1px solid transparent;
+  background-color: teal;
+  border-radius: 6px;
+}
+
+.header{
+  display: flex;
+  justify-content: flex-start;
+  background-color: #D81B60;
+  padding: 10px;
+  font-weight: lighter;
+  font-size: x-large;
+}
+
+.chat-area{
+  height:570px;
+}
+.sent-msg{
+  
+}
+.received-msg{
+
+}

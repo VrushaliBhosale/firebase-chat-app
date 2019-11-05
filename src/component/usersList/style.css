@@ -1,0 +1,29 @@
+.chatListWrapper{ 
+  overflow-y: scroll;
+}
+
+.chatListHeader{
+  font-size: x-large;
+  font-weight: lighter;
+  padding: 10px;
+  background-color: #D81B60;
+  color: white;
+}
+
+.list{
+  font-size: xx-large;
+  border-bottom: 1px solid;
+  padding: 8px;
+  display: flex;
+  cursor:pointer;
+}
+ 
+.initialLetter{
+  font-size: 15px;
+  border: 1px solid;
+  padding: 7px;
+  border-radius: 20px;
+  width: 20px;
+  text-align: center;
+  height: 20px;
+}
