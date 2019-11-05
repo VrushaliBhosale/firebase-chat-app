@@ -30,22 +30,8 @@
   height:570px;
 }
 .sent-msg{
-  background-color: green;
-  padding: 5px;
-  margin:10px;
-  border-radius: 10px;
-  width:200px;
-  overflow: hidden;
-  color: white;
+  
 }
-
 .received-msg{
-  background-color: blue;
-  padding: 5px;
-  margin:10px;
-  border-radius: 10px;
-  width:200px;
-  overflow: hidden;
-  align-self: right;
-  color: white;
+
 }

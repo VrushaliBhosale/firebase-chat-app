@@ -4,7 +4,7 @@ import './style.css';
 import firebase from '../../services/firebase'
 import { Redirect } from 'react-router-dom';
 import DBService from '../../services/db.services';
-
+let selectedUser;
 function UsersList (props) {
 
   const databaseRef=firebase.database().ref("MyChatApp");
@@ -13,7 +13,8 @@ function UsersList (props) {
   const [conversationID,setConversationId] = useState('');
   const [redirect, setRedirect] = useState(false);
 
-  const redirectToChat = async(chatwith) => { 
+  const redirectToChat = async(chatwith,name) => { 
+    if(name) selectedUser = name;
     console.log("key :",chatwith);
     setchatuser(chatwith);
     let conversationID = await DBService.setConversation(props.location.state.key,chatwith);
@@ -41,7 +42,7 @@ return (
         list ?
         list.map((data,index) => {
             return(
-              <div key={index} onClick={()=>redirectToChat(data.id)}>
+              <div key={index} onClick={()=>redirectToChat(data.id,data.name)}>
                 {
                   data.id !== props.location.state.key ? 
                 <div className='list'>
@@ -56,7 +57,7 @@ return (
       {
         redirect && conversationID ? <Redirect to={{
           pathname: '/userchat',
-          state:{key:props.location.state.key,cId:conversationID}
+          state:{key:props.location.state.key,cId:conversationID,selectedUser:selectedUser}
         }} /> 
         : null
       }

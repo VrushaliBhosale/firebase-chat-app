@@ -7,19 +7,18 @@ import DBService from '../../services/db.services';
 
 function ChatMessages (props) {
   const [msg,setMessages]=useState('');
-  const databaseRef = firebase.database().ref("MychatApp");
-  const [redirect,setRedireact]=useState(false);
-  // const [messages,setMessagesArray]=useState([]);
-  const [messages,setAllmessages]=useState([]);
+  const databaseRef = firebase.database().ref("MyChatApp");
+  const [redirect,setRedireact] = useState(false);
+  const [messages,setAllmessages] = useState([]);
+  let ref = databaseRef.child('Conversations').child(props.location.state.cId).child('Messages');
 
   const sendMessage = async() => {
-   console.log("msg :",msg);
-   await DBService.savemessages(msg,props.location.state.cId,props.location.state.key);
-   let conversationid = props.location.state.cId;
-   DBService.getLastAddedMsg(conversationid).then(messages=>{
-     setAllmessages(messages);
-     console.log(messages);
-   });
+   //await DBService.savemessages(msg,props.location.state.cId,props.location.state.key);
+   await ref.child(Date.now()).set({
+    sender:props.location.state.key,
+    message:msg,
+    time:Date.now()
+  })
   }
  
   const redirectToList = () => {
@@ -27,11 +26,17 @@ function ChatMessages (props) {
   }
 
  useEffect(() => {
-   DBService.getAllConversationMsg(props.location.state.cId).then(messages=>{
-     setAllmessages(messages);
-     console.log(messages);
-   });
-  },[]);
+  const handleNewMessages = snap => {
+    if (snap.val()) {
+      let messages = snap.val();
+      setAllmessages(messages);
+    }
+  }
+  ref.on('value', handleNewMessages);
+  return () => {
+   ref.off('value', handleNewMessages);
+   };
+  });
 
 return (
   <div style={{border:'1px solid'}} className="wrapper">
@@ -41,30 +46,17 @@ return (
       arrow_back_ios
       </i>
       </div>
-      <div>Chat Application</div>
+      <div>{props.location.state.selectedUser}</div>
     </div>
   <div className="card_wrapper">
-    {/* <textarea 
-      style={{
-        height: 'calc(100vh - 2px - 28vh )',
-        backgroundColor:'#F6F6F8',
-        width:'97%',
-        fontSize: '15px',
-        padding: '5px'
-      }} 
-      value={msg} 
-      readOnly
-    >
-      </textarea> */}
       <div className='chat-area'>
           {
             <div>
                 {
-                  messages.map(msg => {
-                    
+                  Object.keys(messages).map(msg => {
                     return(
-                      <div className={msg.sender === props.location.state.key ? "sent-msg" : "received-msg"}>
-                        {msg.message}
+                      <div className={messages[msg]["sender"] === props.location.state.key ? "sent-msg" : "received-msg"}>
+                        {messages[msg]["message"]}
                       </div>) 
                   })  
                 }

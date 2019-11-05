@@ -1,6 +1,8 @@
 import firebase from './firebase';
 const databaseRef = firebase.database().ref("MyChatApp");
-let messages=[];
+let messages = [];
+let userRef = databaseRef.child('Users');
+let msgRef = databaseRef.child('Conversations')
  class DbServices{
   constructor(){
 
@@ -8,7 +10,7 @@ let messages=[];
 
   getAllUsers(){
     let userslist=[];
-    databaseRef.child('Users')
+    userRef
     .once('value',snapshot => {
       if(snapshot.val()!==null){
        snapshot.forEach(snap=>{
@@ -16,11 +18,11 @@ let messages=[];
        })
       }
     })
-    return userslist; 
+    return userslist;
   }
 
   async getAllConversationMsg(id){
-   await databaseRef.child('Conversations').child(id).child('Messages')
+   await msgRef.child(id).child('Messages')
     .once('value',snapshot => {
       // console.log("All msg",snapshot.val());
       snapshot.forEach(data=>{
@@ -33,7 +35,7 @@ let messages=[];
 
   async isUserAlreadyExists(userName){
     let isexists=''; 
-    await databaseRef.child('Users')
+    await userRef
       .once('value',async snapshot => {
       if(snapshot.val() !== null){
       await snapshot.forEach(snap=>{
@@ -52,7 +54,7 @@ let messages=[];
 
  async addNewUser(newuser){
   let key = '';
-    await databaseRef.child('Users').push(newuser)
+    await userRef.push(newuser)
     .then(res=>{
      key = res.key;
      console.log("new user saved successfully..",key);
@@ -75,13 +77,13 @@ let messages=[];
      })
     })
   if(cid === ''){
-    await databaseRef.child('Conversations')
+    await msgRef
     .push({
       curentUser:curentUser,
       chattingwith:chattingWith,
       messages:[]
     }).then(async res=>{
-      await databaseRef.child('Conversations').child(res.key).update({id:res.key});
+      await msgRef.child(res.key).update({id:res.key});
       cid = res.key;
       console.log("new consversation set....",cid);
       return cid;
@@ -91,9 +93,7 @@ let messages=[];
   }
 
   async savemessages(msg,cID,currentUser){
-    // let ts = new Date();
-    // console.log(ts.toLocaleDateString());
-    await databaseRef.child('Conversations').child(cID).child('Messages').child(Date.now()).set({
+    await msgRef.child(cID).child('Messages').child(Date.now()).set({
       sender:currentUser,
       message:msg,
       time:Date.now()
@@ -102,12 +102,20 @@ let messages=[];
 
   async getLastAddedMsg(cid){
     
-    await databaseRef.child('Conversations').child(cid).child('Messages')
-   .once('child_added',snapshot => {
-    // console.log("snap :",snapshot.val());
-    messages.push(snapshot.val());
-   })
-   return messages;
+  //   await msgRef.child(cid).child('Messages')
+  //  .once('child_added',snapshot => {
+  //   // console.log("snap :",snapshot.val());
+  //   messages.push(snapshot.val());
+  //  })
+  //  return messages;
+
+  await databaseRef.child('Conversations').child(cid).child('Messages')
+  .on('value',snapshot => {
+   // console.log("snap :",snapshot.val());
+    messages.push(snapshot.val());  
+    console.log("snap array :".messages);
+  })
+  return messages;
   }
 
 }
