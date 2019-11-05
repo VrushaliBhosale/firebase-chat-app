@@ -2,19 +2,22 @@ import React , { useState,useEffect }from 'react';
 import TextField from '@material-ui/core/TextField';
 import './style.css';
 import Button from '@material-ui/core/Button';
-import { Link } from 'react-router-dom';
+import { Link,Redirect } from 'react-router-dom';
 import firebase from '../../services/firebase'
+import DBService from '../../services/db.services';
 
 function UserLogin () {
   const [userName,setName] = useState("");
   const [userNumber,setNumber] = useState("");
-  const databaseRef=firebase.database().ref("MyChatApp");
+  const [userKey,setUserKey] = useState("");
+  const databaseRef = firebase.database().ref("MyChatApp");
 
   useEffect(()=>{
-   
-  },[userName,userNumber])
+ 
+  },[userName,userNumber,userKey])
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    let userKey;
     if(!userName){
       alert("Please Enter Name");
     }
@@ -22,31 +25,26 @@ function UserLogin () {
       alert("Please Enter Number");
     }
     if(userName && userNumber){
-      console.log("connnected");
-      databaseRef.child('Users').push({
-         name:userName,
-         mobNo:userNumber
-      })
-      console.log("saved to firebase.");
+      let isexists = await DBService.isUserAlreadyExists(userName);
+      if(isexists === ''){
+        let newUser={name:userName,mobNo:userNumber}
+        DBService.addNewUser(newUser)
+        .then(res => {
+          userKey = (res!='') ? res:null;
+          setUserKey(userKey);
+        })
+      }else{
+        userKey = isexists;
+        await setUserKey(userKey);
+      }
     }
-   
-    // databaseRef.child('users')
-    // .once("value", snapshot => {
-      // snapshot.child("Users").
-      // if(!snapshot.child('u1').val()){
-      //   databaseRef.child('/users').update({'name':userName},{'number':userNumber});
-      // }
-      // else {
-      //   databaseRef.child('/users').update({'name':userName},{'number':userNumber})
-      // } 
-    //   console.log("firebase connected",snapshot);
-    // })
   }
 
 return (
   <div className="wrapper">
     <div className="main_header">
-      <div>Chat Application</div> 
+      <div>Chat Application</div>
+    
     </div>
     <div className="user_name">
       <div style={{alignSelf: 'center',marginBottom: '15px'}}>
@@ -68,9 +66,20 @@ return (
         />
       </div>
       <div className="submit">
-        <Link to={ userName && userNumber ? '/chat' : '/'} style={{ textDecoration: 'none' }}>
+        {/* <Link to={{ pathname: linktoChatList ? '/userchat' : '/hello' ,}} state={{key:userKey}} style={{ textDecoration: 'none' }}>
          <Button onClick={handleSubmit} variant="contained" color="secondary">Start Chatting</Button>
-        </Link>
+        </Link> */}
+
+        <Button onClick={handleSubmit} variant="contained" color="secondary">Start Chatting</Button>
+        {
+          (userName && userNumber) && userKey ?
+          <Redirect to={{
+            pathname: '/userlist',
+            state: { key: userKey }
+        }} /> : null
+        }
+       
+
       </div>
     </div>
   </div>

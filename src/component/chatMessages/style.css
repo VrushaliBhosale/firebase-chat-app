@@ -5,7 +5,7 @@
 
 .text_button_wrapper{
   display: flex;
-  margin-top: 2%;
+  margin-top: 3%;
   justify-content: space-between;
   padding: 1%;
 }
@@ -19,9 +19,19 @@
 
 .header{
   display: flex;
-  justify-content: space-between;
-  background-color: teal;
-  /* padding: 10px; */
+  justify-content: flex-start;
+  background-color: #D81B60;
+  padding: 10px;
   font-weight: lighter;
   font-size: x-large;
+}
+
+.chat-area{
+  height:570px;
+}
+.sent-msg{
+  
+}
+.received-msg{
+
 }
