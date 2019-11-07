@@ -27,7 +27,8 @@
 }
 
 .chat-area{
-  height:570px;
+  height:550px;
+  overflow: auto;
 }
 .sent-msg{
   background-color: green;
