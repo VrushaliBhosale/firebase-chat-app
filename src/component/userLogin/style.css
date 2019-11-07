@@ -2,9 +2,10 @@
   display: flex;
   flex-direction: column;
   /* justify-content: center; */
-  
+  background-color: #FFFFFF;
+  color: white;
   height: 80vh;
-  border: 1px solid;
+  border: 1px solid black;
   margin-top: 17%;
 }
 
@@ -12,6 +13,7 @@
   display: flex;
   flex-direction: column;
   margin: auto 0;
+  color: white;
 }
 
 .messages{
@@ -21,11 +23,12 @@
 
 .submit{
   align-self: center;
+  background-color: #6766FF;
 }
 
 .main_header{
   display: flex;
-  background-color: #F50057;
+  background-color: #292D37;
   padding: 10px;
   font-weight: lighter;
   font-size: x-large;

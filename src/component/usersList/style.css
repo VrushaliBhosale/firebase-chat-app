@@ -1,21 +1,33 @@
 .chatListWrapper{ 
   overflow-y: scroll;
+  background-color: #1A181C ;
+  color: white;
 }
 
 .chatListHeader{
   font-size: x-large;
   font-weight: lighter;
   padding: 10px;
-  background-color: #D81B60;
+  background-color: #292D37;
   color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
+.loginUser{
+  font-size: 13px;
+  cursor: pointer;
+}
 .list{
   font-size: xx-large;
-  border-bottom: 1px solid;
+  /* border-bottom: 1px solid darkslategray; */
   padding: 8px;
   display: flex;
   cursor:pointer;
+}
+.list:hover{
+  background-color: #333D49;
 }
  
 .initialLetter{
@@ -26,4 +38,5 @@
   width: 20px;
   text-align: center;
   height: 20px;
+  background-color: #67426E;
 }

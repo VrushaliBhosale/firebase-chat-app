@@ -43,8 +43,7 @@ function UserLogin () {
 return (
   <div className="wrapper">
     <div className="main_header">
-      <div>Chat Application</div>
-    
+      Chat Application
     </div>
     <div className="user_name">
       <div style={{alignSelf: 'center',marginBottom: '15px'}}>
@@ -70,12 +69,12 @@ return (
          <Button onClick={handleSubmit} variant="contained" color="secondary">Start Chatting</Button>
         </Link> */}
 
-        <Button onClick={handleSubmit} variant="contained" color="secondary">Start Chatting</Button>
+        <Button onClick={handleSubmit} variant="contained" style={{backgroundColor:'#6766FF',color:'white',borderRadius:'5px'}}>Start Chatting</Button>
         {
           (userName && userNumber) && userKey ?
           <Redirect to={{
             pathname: '/userlist',
-            state: { key: userKey }
+            state: { key: userKey ,username: userName}
         }} /> : null
         }
        

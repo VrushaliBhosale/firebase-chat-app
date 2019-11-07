@@ -64,15 +64,15 @@ return (
       </div>
     <div className="text_button_wrapper">
       <TextField
-        id="standard-full-width"
+        // id="standard-full-width"
         value={msg}
         onChange={(e)=>setMessages(e.target.value)}
-        style={{width:'80%'}}
+        style={{width:'80%',color:'#FFFFFF'}}
         onKeyDown={sendMessage}
         />  
-      {/* <i className="material-icons" onClick={sendMessage}>
+      <i className="material-icons" onClick={sendMessage}>
         send
-      </i> */}
+      </i>
     </div>
   </div>
   {
