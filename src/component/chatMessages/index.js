@@ -12,13 +12,16 @@ function ChatMessages (props) {
   const [messages,setAllmessages] = useState([]);
   let ref = databaseRef.child('Conversations').child(props.location.state.cId).child('Messages');
 
-  const sendMessage = async() => {
+  const sendMessage = async(e) => {
+    if(e.key === 'Enter' && msg !== ""){
+      await ref.child(Date.now()).set({
+        sender:props.location.state.key,
+        message:msg,
+        time:Date.now()
+      })
+      setMessages('');
+    }
    //await DBService.savemessages(msg,props.location.state.cId,props.location.state.key);
-   await ref.child(Date.now()).set({
-    sender:props.location.state.key,
-    message:msg,
-    time:Date.now()
-  })
   }
  
   const redirectToList = () => {
@@ -50,29 +53,26 @@ return (
     </div>
   <div className="card_wrapper">
       <div className='chat-area'>
-          {
-            <div>
-                {
-                  Object.keys(messages).map(msg => {
-                    return(
-                      <div className={messages[msg]["sender"] === props.location.state.key ? "sent-msg" : "received-msg"}>
-                        {messages[msg]["message"]}
-                      </div>) 
-                  })  
-                }
-            </div>
-          }
-        </div>
+        {
+          Object.keys(messages).map(msg => {
+            return(
+              <div className={messages[msg]["sender"] === props.location.state.key ? "sent-msg" : "received-msg"}>
+                {messages[msg]["message"]}
+              </div>) 
+          })  
+        }
+      </div>
     <div className="text_button_wrapper">
       <TextField
         id="standard-full-width"
         value={msg}
         onChange={(e)=>setMessages(e.target.value)}
         style={{width:'80%'}}
+        onKeyDown={sendMessage}
         />  
-      <i className="material-icons" onClick={sendMessage}>
+      {/* <i className="material-icons" onClick={sendMessage}>
         send
-      </i>
+      </i> */}
     </div>
   </div>
   {
