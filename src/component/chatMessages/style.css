@@ -1,13 +1,15 @@
 .card_wrapper{
   display: flex;
   flex-direction: column;
+  background-color: #292D37;
 }
 
 .text_button_wrapper{
   display: flex;
-  margin-top: 3%;
+  margin-top: 5%;
   justify-content: space-between;
   padding: 1%;
+  color: white;
 }
 
 .send_button{
@@ -20,28 +22,30 @@
 .header{
   display: flex;
   justify-content: flex-start;
-  background-color: #D81B60;
+  background-color: #292D37;
   padding: 10px;
-  font-weight: lighter;
+  font-weight: normal;
   font-size: x-large;
 }
 
 .chat-area{
-  height:550px;
+  height:470px;
   overflow: auto;
+  background-color: #1A191C;
 }
 .sent-msg{
-  background-color: green;
+  background-color: #6742B8;
   padding: 5px;
   margin:10px;
   border-radius: 10px;
   width:200px;
   overflow: hidden;
   color: white;
+  margin-left: 125px;
 }
 
 .received-msg{
-  background-color: blue;
+  background-color: #323036;
   padding: 5px;
   margin:10px;
   border-radius: 10px;
