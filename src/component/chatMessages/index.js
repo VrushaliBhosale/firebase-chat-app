@@ -5,7 +5,19 @@ import firebase from '../../services/firebase'
 import { Redirect } from 'react-router';
 import DBService from '../../services/db.services';
 import { AppContext } from '../context/appContext';
+import { makeStyles } from "@material-ui/core/styles";
+import Input from '@material-ui/core/Input';
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    '& > *': {
+      margin: theme.spacing(1),
+    },
+    input: {
+      color: "white"
+    }
+  },
+}));
 function ChatMessages (props) {
   const [msg,setMessages]=useState('');
   const databaseRef = firebase.database().ref("MyChatApp");
@@ -49,7 +61,7 @@ function ChatMessages (props) {
    ref.off('value', handleNewMessages);
    };
   });
-
+  const classes = useStyles();
 return (
   <AppContext.Consumer>
     {
@@ -75,13 +87,27 @@ return (
               }
             </div>
           <div className="text_button_wrapper">
-            <TextField
+          <Input 
+            defaultValue="" 
+            inputProps={{ 'aria-label': 'description' }} 
+            style={{color:'white',width:'80%'}} 
+            value={msg}
+            onChange={(e)=>setMessages(e.target.value)}
+            onKeyDown={sendMessage}
+          />
+
+            {/* <TextField
               id="standard-full-width"
               value={msg}
               onChange={(e)=>setMessages(e.target.value)}
-              style={{width:'80%'}}
+              style={{width:'80%',color:'white'}}
               onKeyDown={sendMessage}
-              />  
+              InputProps={{
+                classes: {
+                    input: classes.input
+                }
+            }}
+              />   */}
             {/* <i className="material-icons" onClick={sendMessage}>
               send
             </i> */}

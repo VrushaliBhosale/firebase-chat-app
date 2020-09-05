@@ -13,10 +13,9 @@ function UserLogin () {
   const context = useContext(AppContext);
   useEffect(()=>{
     console.log("context",context);
-  },[context.data.userName,context.data.userNumber,context.data.logedUserKey])
+  },[context.data.userName,context.data.userNumber,context.data.logedUserKey]);
   
   const handleSubmit = async () => {
-    setLoading(true);
     const re = /^[0-9\b]+$/;
     let userKey;
     if(!context.data.userName){
@@ -27,6 +26,7 @@ function UserLogin () {
       alert("Please Enter Valid Mobile Number");
       return;
     }
+    setLoading(true);
       let isexists = await DBService.isUserAlreadyExists(context.data.userNumber);
       if(isexists === ''){
         let newUser={name:context.data.userName,mobNo:context.data.userNumber}
@@ -34,7 +34,6 @@ function UserLogin () {
         .then(async res => {
           userKey = (res!=='') ? res:null;
          await context.updateState('logedUserKey',userKey);
-          console.log("user key set");
           setSessionCookie("userName",context.data.userName);
           setSessionCookie("logedUserKey",userKey);
         })
@@ -42,7 +41,6 @@ function UserLogin () {
         console.log("User is already there");
         userKey = isexists;
         await context.updateState('logedUserKey',userKey);
-        console.log("user key set");
         setSessionCookie("userName",context.data.userName);
         setSessionCookie("logedUserKey",userKey);
       }

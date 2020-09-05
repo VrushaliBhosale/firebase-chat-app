@@ -15,7 +15,7 @@ function App() {
   const context = useContext(AppContext);
 
   useEffect(()=>{
-     console.log("Cookies values :",Cookies.get('logedUserKey'),Cookies.get('userName'));
+    
   })
 
   const AuthenticatedRoute = ({component:Component}) => (

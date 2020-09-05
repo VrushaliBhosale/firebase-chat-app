@@ -3,6 +3,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import './style.css';
 import firebase from '../../services/firebase'
 import { Redirect } from 'react-router-dom';
+import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import DBService from '../../services/db.services';
 import {AppContext} from '../context/appContext';
@@ -18,7 +19,7 @@ function UsersList (props) {
   const [conversationID,setConversationId] = useState('');
   const [redirect, setRedirect] = useState(false);
   const [open, setOpen] = React.useState(false);
-  const [menu, setMenu] = React.useState(false);
+  const [isMenuOpen, setMenu] = useState(null);
   const [creategrp,setcreategrp] = React.useState(false);
   const context = useContext(AppContext);
   const [username,setUserName] = useState();
@@ -53,12 +54,13 @@ function UsersList (props) {
     })
   },[username])
      
-  const openProfileMenu = () => {
-    setMenu(true);
+  const openProfileMenu = (event) => {
+    setMenu(event.currentTarget);
+    console.log("cliked ..",isMenuOpen);
   }
 
   const handleClose = () => {
-    setMenu(false);
+    setMenu(null);
   };
 
   const logout = () => {
@@ -80,7 +82,7 @@ return (
         <div className="chatListWrapper wrapper">
         <div className="chatListHeader">
         <div>Chat Application</div>
-        <div className="loginUser" onClick={openProfileMenu}>{username}</div>
+        <div className="loginUser" onClick={openProfileMenu}>{username ? username : 'Menus'}</div>
         </div>
           {
             list ?
@@ -105,8 +107,19 @@ return (
             }} /> 
             : null
           } 
+          <Menu
+            id="simple-menu"
+            anchorEl={isMenuOpen}
+            keepMounted
+            open={Boolean(isMenuOpen)}
+            onClose={handleClose}
+          >
+            <MenuItem onClick={handleClose}>Profile</MenuItem>
+            <MenuItem onClick={logout}>Logout</MenuItem>
+            <MenuItem onClick={createNewGroup}>New Group</MenuItem>
+          </Menu>
 
-            { menu ? 
+            {/* { isMenuOpen ? 
               <div style={{position:'absolute' ,right:250, }} onClick={handleClose}>
                 <MenuItem value={10}>Profile</MenuItem>
                 <MenuItem value={20} onClick={logout}>Logout</MenuItem>
@@ -115,7 +128,7 @@ return (
 
               </div>
               : null
-            }
+            } */}
             {
               open ?
               <Redirect to={{
