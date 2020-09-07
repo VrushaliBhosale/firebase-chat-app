@@ -1,13 +1,13 @@
 import firebase from './firebase';
+import React,{useContext} from 'react';
+import {AppContext} from '../component/context/appContext';
+
 const databaseRef = firebase.database().ref("MyChatApp");
 let messages = [];
 let userRef = databaseRef.child('Users');
-let msgRef = databaseRef.child('Conversations')
+let msgRef = databaseRef.child('Conversations');
+
  class DbServices{
-  constructor(){
-
-  }
-
   getAllUsers(){
     let userslist=[];
     userRef
@@ -24,7 +24,7 @@ let msgRef = databaseRef.child('Conversations')
   async getAllConversationMsg(id){
    await msgRef.child(id).child('Messages')
     .once('value',snapshot => {
-      // console.log("All msg",snapshot.val());
+      // console.log("All msg",snapshot.val()); 
       snapshot.forEach(data=>{
         messages.push(data.val());
       })
@@ -33,22 +33,22 @@ let msgRef = databaseRef.child('Conversations')
      return messages; 
   }
 
-  async isUserAlreadyExists(userName){
+  async isUserAlreadyExists(userNumber){
     let isexists=''; 
     await userRef
       .once('value',async snapshot => {
       if(snapshot.val() !== null){
       await snapshot.forEach(snap=>{
-        console.log("users are :",snap.val().name);
-         if(snap.val().name === userName){
+        console.log("users are :",snap.val().mobNo);
+         if(snap.val().mobNo === userNumber){
             isexists = snap.key;
-            console.log("is exists :",isexists)
+            console.log("User is already there",isexists);
             return isexists;
             }
           })
         }
       })
-      
+      console.log("User is new",isexists);
       return isexists;
   }
 

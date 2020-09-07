@@ -26,9 +26,9 @@
   display: flex;
   cursor:pointer;
 }
-.list:hover{
-  background-color: #333D49;
-}
+/* .list:hover{
+  background-color: lightgray;
+} */
  
 .initialLetter{
   font-size: 15px;
