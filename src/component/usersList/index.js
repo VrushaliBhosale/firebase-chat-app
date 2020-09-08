@@ -1,12 +1,14 @@
 /* eslint-disable no-unused-expressions */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import './style.css';
 import firebase from '../../services/firebase'
 import { Redirect } from 'react-router-dom';
 import MenuItem from '@material-ui/core/MenuItem';
-
-import Select from '@material-ui/core/Select';
 import DBService from '../../services/db.services';
+import {AppContext} from '../context/appContext';
+import {getSessionCookie} from '../../services/cookie.service';
+import * as Cookies from "js-cookie";
+
 let selectedUser;
 function UsersList (props) {
 
@@ -17,18 +19,29 @@ function UsersList (props) {
   const [redirect, setRedirect] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [menu, setMenu] = React.useState(false);
+  const [creategrp,setcreategrp] = React.useState(false);
+  const context = useContext(AppContext);
+  const [username,setUserName] = useState();
 
   const redirectToChat = async(chatwith,name) => { 
     if(name) selectedUser = name;
-    console.log("key :",chatwith);
+     console.log("key :",chatwith);
     setchatuser(chatwith);
-    let conversationID = await DBService.setConversation(props.location.state.key,chatwith);
+    let conversationID = await DBService.setConversation(context.data.logedUserKey,chatwith);
     setConversationId(conversationID);
     console.log("cid in list:",conversationID);
     setRedirect(true);
   }
 
   useEffect( () => {
+    console.log("App context is :",context);
+    let name = Cookies.get('userName');
+    let key = Cookies.get('logedUserKey');
+    if(name&&key){
+      context.updateState('userName',name);
+      context.updateState('logedUserKey',key);
+      setUserName(name);
+    }
     databaseRef.child('Users')
     .once('value',(snapshot) => {
       let list=[];
@@ -38,67 +51,89 @@ function UsersList (props) {
       updateList(list);
       console.log(list);
     })
-  },[])
+  },[username])
      
   const openProfileMenu = () => {
     setMenu(true);
-   
   }
 
   const handleClose = () => {
     setMenu(false);
-    setOpen(true);
-   
-
   };
 
-return (
-  <div className="chatListWrapper wrapper">
-    <div className="chatListHeader">
-    <div  >Chat Application</div>
-    <div className="loginUser" onClick={openProfileMenu}>{props.location.state.username}</div>
-    </div>
-      {
-        list ?
-        list.map((data,index) => {
-            return(
-              <div key={index} onClick={()=>redirectToChat(data.id,data.name)}>
-                {
-                  data.id !== props.location.state.key ? 
-                <div className='list'>
-                  <div className="initialLetter">{data.name.split('')[0].toUpperCase()}</div>
-                  <div style={{margin: '4px 0px 0px 20px',fontSize:'20px'}} >{data.name}</div>
-                </div>:null
-                }
-              </div>
-            )
-        }) : null
-      }
-      {
-        redirect && conversationID ? <Redirect to={{
-          pathname: '/userchat',
-          state:{key:props.location.state.key,cId:conversationID,selectedUser:selectedUser}
-        }} /> 
-        : null
-      }
+  const logout = () => {
+    Cookies.remove('userName');
+    Cookies.remove('logedUserKey');
+    setOpen(true);
+  }
 
-        { menu ? 
-          <div style={{position:'absolute' ,right:250, }} onClick={handleClose}>
-            <MenuItem value={10}>Profile</MenuItem>
-            <MenuItem value={20}>Logout</MenuItem>
-            <MenuItem value={30}>Help</MenuItem>
-          </div>
-          : null
-        }
-        {
-          open ?
-          <Redirect to={{
-            pathname:'/',
-            // state:{key:props.location.state.key}
-          }}/>
-          : null
-        }
-  </div>
+  const createNewGroup = () => {
+    console.log("redirected to grp");
+    setcreategrp(true);
+    console.log("redirected to grp",creategrp);
+  }
+
+return (
+  <AppContext.Consumer>
+    {
+      context=>(
+        <div className="chatListWrapper wrapper">
+        <div className="chatListHeader">
+        <div>Chat Application</div>
+        <div className="loginUser" onClick={openProfileMenu}>{username}</div>
+        </div>
+          {
+            list ?
+            list.map((data,index) => {
+                return(
+                  <div key={index} onClick={()=>redirectToChat(data.id,data.name)}>
+                    {
+                      data.id !== context.data.logedUserKey ? 
+                    <div className='list'>
+                      <div className="initialLetter">{data.name.split('')[0].toUpperCase()}</div>
+                      <div style={{margin: '4px 0px 0px 20px',fontSize:'20px'}} >{data.name}</div>
+                    </div>:null
+                    }
+                  </div>
+                )
+            }) : null
+          }
+          {
+            redirect && conversationID ? <Redirect to={{
+              pathname: '/userchat',
+              state:{cId:conversationID,selectedUser:selectedUser}
+            }} /> 
+            : null
+          } 
+
+            { menu ? 
+              <div style={{position:'absolute' ,right:250, }} onClick={handleClose}>
+                <MenuItem value={10}>Profile</MenuItem>
+                <MenuItem value={20} onClick={logout}>Logout</MenuItem>
+                <MenuItem value={30} onClick={createNewGroup}>Create new group</MenuItem>
+                <MenuItem value={40}>Help</MenuItem>
+
+              </div>
+              : null
+            }
+            {
+              open ?
+              <Redirect to={{
+                pathname:'/',
+              }}/>
+              : null
+            }
+            {
+              creategrp ?
+              <Redirect to={{
+                pathname: '/selectGrpMembers',
+                // state:{key:props.location.state.key}
+              }} /> : null
+            }
+      </div>
+      )
+    }
+  </AppContext.Consumer>
 );
 }
 
