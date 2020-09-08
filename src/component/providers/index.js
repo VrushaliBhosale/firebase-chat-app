@@ -8,8 +8,8 @@ import {AppContext} from '../context/appContext';
   return (
     <AppContext.Provider value={{
       data:state,
-      updateState:(name,value)=>{
-        setState({...state,[name]:value});
+      updateState:(data)=>{
+        setState({...state,...data});
       }
     }}>
       {props.children}

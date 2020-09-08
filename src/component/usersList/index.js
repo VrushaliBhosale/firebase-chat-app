@@ -26,21 +26,17 @@ function UsersList (props) {
 
   const redirectToChat = async(chatwith,name) => { 
     if(name) selectedUser = name;
-     console.log("key :",chatwith);
     setchatuser(chatwith);
     let conversationID = await DBService.setConversation(context.data.logedUserKey,chatwith);
     setConversationId(conversationID);
-    console.log("cid in list:",conversationID);
     setRedirect(true);
   }
 
   useEffect( () => {
-    console.log("App context is :",context);
     let name = Cookies.get('userName');
     let key = Cookies.get('logedUserKey');
     if(name&&key){
-      context.updateState('userName',name);
-      context.updateState('logedUserKey',key);
+      context.updateState({'userName':name,'logedUserKey':key});
       setUserName(name);
     }
     databaseRef.child('Users')
@@ -50,13 +46,11 @@ function UsersList (props) {
         list.push({name:snap.val().name,mobno:snap.val().mobNo,id:snap.key});  
       })
       updateList(list);
-      console.log(list);
     })
   },[username])
      
   const openProfileMenu = (event) => {
     setMenu(event.currentTarget);
-    console.log("cliked ..",isMenuOpen);
   }
 
   const handleClose = () => {
@@ -70,9 +64,7 @@ function UsersList (props) {
   }
 
   const createNewGroup = () => {
-    console.log("redirected to grp");
     setcreategrp(true);
-    console.log("redirected to grp",creategrp);
   }
 
 return (
