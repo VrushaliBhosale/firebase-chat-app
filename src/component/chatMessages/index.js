@@ -7,6 +7,7 @@ import DBService from '../../services/db.services';
 import { AppContext } from '../context/appContext';
 import { makeStyles } from "@material-ui/core/styles";
 import Input from '@material-ui/core/Input';
+import * as Cookies from "js-cookie";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,6 +29,7 @@ function ChatMessages (props) {
 
   const sendMessage = async(e) => {
     if(e.key === 'Enter' && msg !== ""){
+
       await ref.child(Date.now()).set({
         sender:context.data.userName,
         message:msg,
@@ -41,18 +43,16 @@ function ChatMessages (props) {
   const redirectToList = () => {
     setRedireact(true);
   }
-
+useEffect(()=>{
+  let name = Cookies.get('userName');
+  let key = Cookies.get('logedUserKey');
+  if(name&&key){
+    context.updateState({'userName':name,'logedUserKey':key});
+  }
+},[])
  useEffect(() => {
-  console.log("App context is :",context);
   const handleNewMessages = snap => {
     if (snap.val()) {
-      // let messages = snap.val();
-      // console.log("new msg :",Object.keys(snap.val()).length);
-      // if(Object.keys(messages).length === Object.keys(snap.val()).length){
-      //   console.log("they are same .")
-      // }else{
-      //   console.log("they are different .")
-      // }
       setAllmessages(snap.val()); 
     }
   }
@@ -78,10 +78,10 @@ return (
         <div className="card_wrapper">
             <div className='chat-area'>
               {
-                Object.keys(messages).map(msg => {
+                Object.keys(messages).map((msg,index) => {
                   return(
-                    <div className={messages[msg]["sender"] === context.data.logedUserKey ? "sent-msg" : "received-msg"}>
-                      {messages[msg]["message"]}
+                    <div key={index} className={messages[msg].sender === context.data.userName ? "sent-msg" : "received-msg"}>
+                      {messages[msg].message}
                     </div>) 
                 })  
               }

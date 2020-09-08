@@ -7,12 +7,14 @@ import firebase from '../../services/firebase'
 import DBService from '../../services/db.services';
 import {AppContext} from '../context/appContext';
 import {setSessionCookie,getSessionCookie} from '../../services/cookie.service';
+import { useHistory } from "react-router-dom";
 
 function UserLogin () {
   const [loading,setLoading] = useState(false); 
   const context = useContext(AppContext);
+  let history = useHistory();
+
   useEffect(()=>{
-    console.log("context",context);
   },[context.data.userName,context.data.userNumber,context.data.logedUserKey]);
   
   const handleSubmit = async () => {
@@ -33,17 +35,15 @@ function UserLogin () {
         DBService.addNewUser(newUser)
         .then(async res => {
           userKey = (res!=='') ? res:null;
-         await context.updateState('logedUserKey',userKey);
-          setSessionCookie("userName",context.data.userName);
-          setSessionCookie("logedUserKey",userKey);
         })
       }else{
-        console.log("User is already there");
+        // console.log("User is already there");
         userKey = isexists;
-        await context.updateState('logedUserKey',userKey);
+      }
+      await context.updateState({'logedUserKey':userKey});
         setSessionCookie("userName",context.data.userName);
         setSessionCookie("logedUserKey",userKey);
-      }
+        history.push('/userlist');
       setLoading(false);
   }
 
@@ -66,7 +66,7 @@ return (
               margin="dense"
               variant="outlined"
               value={context.data.userName}
-              onChange={(e)=>{context.updateState('userName',e.target.value)}}
+              onChange={(e)=>{context.updateState({'userName':e.target.value})}}
             />
           </div>
          <div style={{alignSelf: 'center',marginBottom: '15px'}}>
@@ -75,18 +75,18 @@ return (
             margin="dense"
             variant="outlined"
             value={context.data.userNumber}
-            onChange={(e)=>{context.updateState('userNumber',e.target.value)}}
+            onChange={(e)=>{context.updateState({'userNumber':e.target.value})}}
           />
           </div>
         {
         <div className="submit">
-          <Button onClick={()=>handleSubmit()} variant="contained" style={{backgroundColor:'#6766FF',color:'white',borderRadius:'5px'}}>Start Chatting</Button>
+          <Button onClick={handleSubmit} variant="contained" style={{backgroundColor:'#6766FF',color:'white',borderRadius:'5px'}}>Start Chatting</Button>
           {
-            (context.data.userName && context.data.userNumber) && context.data.logedUserKey ?
-            <Redirect to={{
-              pathname: '/userlist',
-              state: { key: context.data.logedUserKey ,username: context.data.userName}
-          }} /> : null
+          //   (context.data.userName && context.data.userNumber) && context.data.logedUserKey ?
+          //   <Redirect to={{
+          //     pathname: '/userlist',
+          //     state: { key: context.data.logedUserKey ,username: context.data.userName}
+          // }} /> : null
           }
         </div>
         }
